@@ -1,0 +1,183 @@
+<?php
+require 'config.php';
+
+$sql = "SELECT * FROM products ORDER BY name ASC";
+$result = $conn->query($sql);
+$products = $result->fetch_all(MYSQLI_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sari-Sari Store System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">🏪 Sari-Sari Store System</div>
+      <nav class="nav">
+        <button class="nav-btn active" data-section="sales">Sales</button>
+        <button class="nav-btn" data-section="inventory">Inventory</button>
+        <button class="nav-btn" data-section="reports">Reports</button>
+        <button class="nav-btn" data-section="pricing">Price</button>
+      </nav>
+    </header>
+
+    <main class="content">
+      <section id="sales" class="panel active">
+        <div class="panel-header">
+          <h2>POS / Sales</h2>
+        </div>
+
+        <div class="sales-layout">
+          <div class="card">
+            <h3>Add Product</h3>
+            <div class="field">
+              <label>Item</label>
+              <select id="productSelect">
+                <option value="">Select product</option>
+                <?php foreach ($products as $product): ?>
+                  <option value="<?= $product['id'] ?>"><?= $product['name'] ?> - ₱<?= number_format($product['price'], 2) ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Quantity</label>
+              <input type="number" id="quantityInput" min="1" value="1" />
+            </div>
+
+            <button id="addToCartBtn" class="primary-btn">Add to Cart</button>
+          </div>
+
+          <div class="card">
+            <h3>Cart</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="cartItems"></tbody>
+            </table>
+
+            <div class="totals">
+              <div class="total-row">
+                <span>Subtotal</span>
+                <strong id="subtotal">₱0.00</strong>
+              </div>
+              <div class="total-row">
+                <span>Discount %</span>
+                <input type="number" id="discountPercent" min="0" max="100" value="0" />
+              </div>
+              <div class="total-row">
+                <span>Discount</span>
+                <strong id="discountAmount">₱0.00</strong>
+              </div>
+              <div class="total-row grand">
+                <span>Grand Total</span>
+                <strong id="grandTotal">₱0.00</strong>
+              </div>
+            </div>
+
+            <div class="cart-actions">
+              <button id="completeSaleBtn" class="success-btn">Complete Sale</button>
+              <button id="clearCartBtn" class="secondary-btn">Clear Cart</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="inventory" class="panel">
+        <div class="panel-header">
+          <h2>Inventory Stocks</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Reorder</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="reports" class="panel">
+        <div class="panel-header">
+          <h2>Sales Reports</h2>
+        </div>
+
+        <div class="report-controls">
+          <label>Report Type
+            <select id="reportType">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+
+          <label>Start
+            <input type="date" id="reportStartDate" />
+          </label>
+
+          <label>End
+            <input type="date" id="reportEndDate" />
+          </label>
+
+          <button id="generateReportBtn" class="primary-btn">Generate</button>
+        </div>
+
+        <div id="reportOutput" class="report-output"></div>
+      </section>
+
+      <section id="pricing" class="panel">
+        <div class="panel-header">
+          <h2>Price Change</h2>
+        </div>
+
+        <div class="card">
+          <h3>Update Product Price</h3>
+          <div class="field">
+            <label>Product</label>
+            <select id="priceProductSelect">
+              <option value="">Select product</option>
+              <?php foreach ($products as $product): ?>
+                <option value="<?= $product['id'] ?>"><?= $product['name'] ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Current Price</label>
+            <input type="text" id="currentPrice" readonly />
+          </div>
+
+          <div class="field">
+            <label>New Price</label>
+            <input type="number" id="newPriceInput" step="0.01" min="0" />
+          </div>
+
+          <button id="updatePriceBtn" class="primary-btn">Update Price</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

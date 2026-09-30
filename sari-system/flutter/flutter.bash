@@ -1,0 +1,2 @@
+flutter create sari_store_app
+cd sari_store_app
