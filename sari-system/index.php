@@ -90,6 +90,7 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
             <div class="cart-actions">
               <button id="completeSaleBtn" class="success-btn">Complete Sale</button>
               <button id="clearCartBtn" class="secondary-btn">Clear Cart</button>
+              <button id="printReceiptBtn" class="secondary-btn">Print Receipt</button>
             </div>
           </div>
         </div>
@@ -98,6 +99,11 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
       <section id="inventory" class="panel">
         <div class="panel-header">
           <h2>Inventory Stocks</h2>
+        </div>
+
+        <div class="toolbar">
+          <input type="text" id="searchInventory" placeholder="Search products..." />
+          <button id="addProductBtn" class="primary-btn" style="margin-top: 10px;">Add New Product</button>
         </div>
 
         <div class="table-wrap">
@@ -110,6 +116,7 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
                 <th>Price</th>
                 <th>Reorder</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="inventoryTable"></tbody>
@@ -176,6 +183,39 @@ $products = $result->fetch_all(MYSQLI_ASSOC);
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- Modal for Adding Product -->
+  <div id="productModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" id="closeModalBtn">&times;</span>
+      <h3>Add New Product</h3>
+      <form id="productForm">
+        <div class="field">
+          <label>Product Name</label>
+          <input type="text" id="productName" required />
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <input type="text" id="productCategory" required />
+        </div>
+        <div class="field">
+          <label>Quantity</label>
+          <input type="number" id="productQty" min="1" required />
+        </div>
+        <div class="field">
+          <label>Price (₱)</label>
+          <input type="number" id="productPrice" step="0.01" min="0" required />
+        </div>
+        <div class="field">
+          <label>Reorder Level</label>
+          <input type="number" id="productReorder" min="1" required />
+        </div>
+        <div class="field">
+          <button type="submit" class="success-btn">Add Product</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="app.js"></script>
