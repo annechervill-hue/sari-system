@@ -65,7 +65,8 @@ function renderProductOptions() {
 }
 
 function renderInventoryTable() {
-  const search = document.getElementById("searchInventory").value.toLowerCase();
+  const searchInput = document.getElementById("searchInventory");
+  const search = searchInput ? searchInput.value.toLowerCase() : "";
   const table = document.getElementById("inventoryTable");
   const filtered = products.filter(product => {
     return product.name.toLowerCase().includes(search) || product.category.toLowerCase().includes(search);
@@ -152,6 +153,8 @@ function addToCart() {
   }
 
   renderCart();
+  document.getElementById("productSelect").value = "";
+  document.getElementById("quantityInput").value = 1;
 }
 
 function renderCart() {
@@ -237,10 +240,12 @@ function completeSale() {
 }
 
 function deleteProduct(id) {
-  products = products.filter(item => item.id !== id);
-  saveProducts();
-  renderProductOptions();
-  renderInventoryTable();
+  if (confirm("Are you sure you want to delete this product?")) {
+    products = products.filter(item => item.id !== id);
+    saveProducts();
+    renderProductOptions();
+    renderInventoryTable();
+  }
 }
 
 function editProduct(id) {
@@ -301,6 +306,7 @@ function addProduct(event) {
   renderInventoryTable();
   document.getElementById("productForm").reset();
   document.getElementById("productModal").classList.add("hidden");
+  alert("Product added successfully!");
 }
 
 function updatePrice() {
@@ -321,6 +327,7 @@ function updatePrice() {
   renderInventoryTable();
   document.getElementById("currentPrice").value = formatCurrency(product.price);
   document.getElementById("newPriceInput").value = "";
+  alert("Price updated successfully!");
 }
 
 function generateReport() {
@@ -453,20 +460,38 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("completeSaleBtn").addEventListener("click", completeSale);
   document.getElementById("clearCartBtn").addEventListener("click", clearCart);
   document.getElementById("discountPercent").addEventListener("input", updateTotals);
-  document.getElementById("searchInventory").addEventListener("input", renderInventoryTable);
+  
+  const searchInput = document.getElementById("searchInventory");
+  if (searchInput) {
+    searchInput.addEventListener("input", renderInventoryTable);
+  }
 
-  document.getElementById("addProductBtn").addEventListener("click", () => {
-    document.getElementById("productModal").classList.remove("hidden");
-  });
+  const addProductBtn = document.getElementById("addProductBtn");
+  if (addProductBtn) {
+    addProductBtn.addEventListener("click", () => {
+      document.getElementById("productModal").classList.remove("hidden");
+    });
+  }
 
-  document.getElementById("closeModalBtn").addEventListener("click", () => {
-    document.getElementById("productModal").classList.add("hidden");
-  });
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", () => {
+      document.getElementById("productModal").classList.add("hidden");
+    });
+  }
 
-  document.getElementById("productForm").addEventListener("submit", addProduct);
+  const productForm = document.getElementById("productForm");
+  if (productForm) {
+    productForm.addEventListener("submit", addProduct);
+  }
+
   document.getElementById("updatePriceBtn").addEventListener("click", updatePrice);
   document.getElementById("generateReportBtn").addEventListener("click", generateReport);
-  document.getElementById("printReceiptBtn").addEventListener("click", printReceipt);
+  
+  const printReceiptBtn = document.getElementById("printReceiptBtn");
+  if (printReceiptBtn) {
+    printReceiptBtn.addEventListener("click", printReceipt);
+  }
 
   const today = new Date();
   const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
