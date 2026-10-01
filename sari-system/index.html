@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sari-Sari Store System</title>
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  <title>Sari-Sari Store POS</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="cordova.js"></script>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand">
-        <span>🏪</span>
-        <span>Sari-Sari Store System</span>
-      </div>
+      <div class="brand">🏪 Sari-Sari Store</div>
       <nav class="nav">
         <button class="nav-btn active" data-section="sales">Sales</button>
         <button class="nav-btn" data-section="inventory">Inventory</button>
@@ -30,10 +30,11 @@
         <div class="sales-layout">
           <div class="card">
             <h3>Add Product</h3>
-
             <div class="field">
               <label>Item</label>
-              <select id="productSelect"></select>
+              <select id="productSelect">
+                <option value="">Select product</option>
+              </select>
             </div>
 
             <div class="field">
@@ -44,7 +45,7 @@
             <button id="addToCartBtn" class="primary-btn">Add to Cart</button>
           </div>
 
-          <div class="card cart-card">
+          <div class="card">
             <h3>Cart</h3>
             <table>
               <thead>
@@ -64,17 +65,14 @@
                 <span>Subtotal</span>
                 <strong id="subtotal">₱0.00</strong>
               </div>
-
               <div class="total-row">
                 <span>Discount %</span>
                 <input type="number" id="discountPercent" min="0" max="100" value="0" />
               </div>
-
               <div class="total-row">
                 <span>Discount</span>
                 <strong id="discountAmount">₱0.00</strong>
               </div>
-
               <div class="total-row grand">
                 <span>Grand Total</span>
                 <strong id="grandTotal">₱0.00</strong>
@@ -84,6 +82,7 @@
             <div class="cart-actions">
               <button id="completeSaleBtn" class="success-btn">Complete Sale</button>
               <button id="clearCartBtn" class="secondary-btn">Clear Cart</button>
+              <button id="printReceiptBtn" class="secondary-btn">Print Receipt</button>
             </div>
           </div>
         </div>
@@ -92,11 +91,11 @@
       <section id="inventory" class="panel">
         <div class="panel-header">
           <h2>Inventory Stocks</h2>
-          <button id="addProductBtn" class="primary-btn">+ Add Product</button>
         </div>
 
         <div class="toolbar">
-          <input type="text" id="searchInventory" placeholder="Search product..." />
+          <input type="text" id="searchInventory" placeholder="Search products..." />
+          <button id="addProductBtn" class="primary-btn" style="margin-top: 10px;">Add New Product</button>
         </div>
 
         <div class="table-wrap">
@@ -109,7 +108,7 @@
                 <th>Price</th>
                 <th>Reorder</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="inventoryTable"></tbody>
@@ -123,8 +122,7 @@
         </div>
 
         <div class="report-controls">
-          <label>
-            Report Type
+          <label>Report Type
             <select id="reportType">
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -132,18 +130,15 @@
             </select>
           </label>
 
-          <label>
-            Start
+          <label>Start
             <input type="date" id="reportStartDate" />
           </label>
 
-          <label>
-            End
+          <label>End
             <input type="date" id="reportEndDate" />
           </label>
 
           <button id="generateReportBtn" class="primary-btn">Generate</button>
-          <button id="printReceiptBtn" class="secondary-btn">Print Receipt</button>
         </div>
 
         <div id="reportOutput" class="report-output"></div>
@@ -156,10 +151,11 @@
 
         <div class="card">
           <h3>Update Product Price</h3>
-
           <div class="field">
             <label>Product</label>
-            <select id="priceProductSelect"></select>
+            <select id="priceProductSelect">
+              <option value="">Select product</option>
+            </select>
           </div>
 
           <div class="field">
@@ -178,38 +174,35 @@
     </main>
   </div>
 
+  <!-- Modal for Adding Product -->
   <div id="productModal" class="modal hidden">
     <div class="modal-content">
-      <span id="closeModalBtn" class="close">&times;</span>
-      <h3>Add Product</h3>
-
+      <span class="close" id="closeModalBtn">&times;</span>
+      <h3>Add New Product</h3>
       <form id="productForm">
         <div class="field">
           <label>Product Name</label>
           <input type="text" id="productName" required />
         </div>
-
         <div class="field">
           <label>Category</label>
           <input type="text" id="productCategory" required />
         </div>
-
         <div class="field">
           <label>Quantity</label>
-          <input type="number" id="productQty" min="0" required />
+          <input type="number" id="productQty" min="1" required />
         </div>
-
         <div class="field">
-          <label>Price</label>
+          <label>Price (₱)</label>
           <input type="number" id="productPrice" step="0.01" min="0" required />
         </div>
-
         <div class="field">
           <label>Reorder Level</label>
-          <input type="number" id="productReorder" min="0" required />
+          <input type="number" id="productReorder" min="1" required />
         </div>
-
-        <button type="submit" class="success-btn">Save Product</button>
+        <div class="field">
+          <button type="submit" class="success-btn">Add Product</button>
+        </div>
       </form>
     </div>
   </div>
